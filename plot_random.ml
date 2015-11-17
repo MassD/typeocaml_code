@@ -1,3 +1,5 @@
+open Printf
+open Camlimages
 open Core.Std
 
 let print_rgb {Color.r;g;b} =
