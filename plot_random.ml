@@ -23,38 +23,10 @@ let random_plot ~filename ~ran_f ~w ~h ~n =
     bitmap.(x).(y) <- {Color.r = darker r;g = darker g;b = darker b};
   done;
   let img = bitmap_to_img ~bitmap in
-  save_img ~filename ~img;;
-
-
-(* initialize the random number generator *)
-Random.self_init()
-
-(* get a random gaussian using a Box-Muller transform, described
- * here http://en.wikipedia.org/wiki/Box-Muller_transform *)
-let rec get_one_gaussian_by_box_muller () =
-    (* Generate two uniform numbers from -1 to 1 *)
-    let x = Random.float 2.0 -. 1.0 in
-    let y = Random.float 2.0 -. 1.0 in
-    let s = x*.x +. y*.y in
-    if s > 1.0 then get_one_gaussian_by_box_muller ()
-    else x *. sqrt (-2.0 *. (log s) /. s)
-
-(* get a gaussian through oversampling and subtraction *)
-let get_one_gaussian_by_summation () =
-    let rec add_one limit count so_far =
-        if count==limit then so_far
-        else add_one limit (count+1) (so_far +. (Random.float 1.0)) in
-    (add_one 12 0 0.0) -. 6.0
-
-let get_one_gaussian = get_one_gaussian_by_box_muller
-
-let gaussian_rand n = (float_of_int n) *. (get_one_gaussian()) |> int_of_float |> abs
-
-let minisleep (sec: float) = ignore (Unix.select [] [] [] sec)
+  save_img ~filename ~img
 
 let decimal_only f = f -. (floor f)
-
-let ran_via_time bound = let r = (decimal_only (Unix.gettimeofday()) *. 100000000. |> int_of_float) mod bound in r;;
+let ran_via_time bound = ((Unix.gettimeofday() |> decimal_only) *. 100000000. |> int_of_float) mod bound
 
 let _ = random_plot ~filename:"random_plot_time.jpg" ~ran_f:ran_via_time ~w:1024 ~h:1024 ~n:5
 
