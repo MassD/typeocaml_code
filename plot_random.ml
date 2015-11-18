@@ -52,7 +52,9 @@ let gaussian_rand n = (float_of_int n) *. (get_one_gaussian()) |> int_of_float |
 
 let minisleep (sec: float) = ignore (Unix.select [] [] [] sec)
 
-let ran_via_time bound = let r = (Unix.gettimeofday() *. 100000000. |> int_of_float) mod bound in r;;
+let decimal_only f = f -. (floor f)
+
+let ran_via_time bound = let r = (decimal_only (Unix.gettimeofday()) *. 100000000. |> int_of_float) mod bound in r;;
 
 let _ = random_plot ~filename:"random_plot_time.jpg" ~ran_f:ran_via_time ~w:1024 ~h:1024 ~n:5
 
