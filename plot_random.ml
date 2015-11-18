@@ -52,16 +52,9 @@ let gaussian_rand n = (float_of_int n) *. (get_one_gaussian()) |> int_of_float |
 
 let minisleep (sec: float) = ignore (Unix.select [] [] [] sec)
 
-let ran_gen_via_time bound = let r = minisleep (Random.float 1.);(Unix.time() |> int_of_float) mod bound in r;;
+let ran_via_time bound = let r = (Unix.gettimeofday() *. 100000000. |> int_of_float) mod bound in r;;
 
-let get_randu = 
-  let v = ref 1 in 
-  let ru () = let v1 = 65535 * !v mod max_int in v := v1; (float_of_int v1) /. (float_of_int max_int) in
-  ru
-
-let randu n = (get_randu()) *. (float_of_int n) |> int_of_float |> abs
-
-let _ = random_plot ~filename:"random_plot_randu.jpg" ~ran_f:randu ~w:1024 ~h:1024 ~n:5
+let _ = random_plot ~filename:"random_plot_time.jpg" ~ran_f:ran_via_time ~w:1024 ~h:1024 ~n:5
 
 
 (* let _ = random_plot ~filename:"random_plot_int.jpg" ~ran_f:Random.int ~w:1024 ~h:1024 ~n:5 *)
