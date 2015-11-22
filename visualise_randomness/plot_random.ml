@@ -2,7 +2,7 @@ open Camlimages
 
 let random_to_bitmap ~ran_f ~w ~h ~n =
   let bitmap = Array.make_matrix w h {Color.r = 255; g = 255; b = 255} in
-  let to_x_y ~w ~v = v mod w, v / w in
+  let to_row_col ~w ~v = v / w, v mod w in
   let darker c = if c-30 >= 0 then c-30 else 0 in
   for i = 1 to w * h * n do
     let row, col = to_row_col ~w ~v:(ran_f (w * h)) in
