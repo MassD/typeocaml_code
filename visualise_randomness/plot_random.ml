@@ -5,7 +5,7 @@ let random_to_bitmap ~ran_f ~w ~h ~n =
   let to_x_y ~w ~v = v mod w, v / w in
   let darker c = if c-30 >= 0 then c-30 else 0 in
   for i = 1 to w * h * n do
-    let x,y = to_x_y ~w ~v:(ran_f (w * h)) in
+    let row, col = to_row_col ~w ~v:(ran_f (w * h)) in
     let {Color.r;g;b} = bitmap.(x).(y) in
     bitmap.(x).(y) <- {Color.r = darker r;g = darker g;b = darker b};
   done;
