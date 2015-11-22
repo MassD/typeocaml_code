@@ -1,5 +1,16 @@
 open Camlimages
 
+let random_to_bitmap ~ran_f ~w ~h ~n =
+  let darker c = if c-30 >= 0 then c-30 else 0 in
+  let to_x_y ~w ~v = v mod w, v / w in
+  let bitmap = Array.make_matrix w h {Color.r = 255; g = 255; b = 255} in
+  for i = 1 to w * h * n do
+    let x,y = to_x_y ~w ~v:(ran_f (w * h)) in
+    let {Color.r;g;b} = bitmap.(x).(y) in
+    bitmap.(x).(y) <- {Color.r = darker r;g = darker g;b = darker b};
+  done;
+  bitmap
+
 let bitmap_to_img ~bitmap =
   let w = Array.length bitmap in
   let h = if w = 0 then 0 else Array.length bitmap.(0) in
@@ -14,14 +25,7 @@ let bitmap_to_img ~bitmap =
 let save_img ~filename ~img = Jpeg.save filename [] (Images.Rgb24 img)
 
 let random_plot ~filename ~ran_f ~w ~h ~n =
-  let darker c = if c-30 >= 0 then c-30 else 0 in
-  let to_x_y ~w ~v = v mod w, v / w in
-  let bitmap = Array.make_matrix w h {Color.r = 255; g = 255; b = 255} in
-  for i = 1 to w * h * n do
-    let x,y = to_x_y ~w ~v:(ran_f (w * h)) in
-    let {Color.r;g;b} = bitmap.(x).(y) in
-    bitmap.(x).(y) <- {Color.r = darker r;g = darker g;b = darker b};
-  done;
+  let bitmap = random_to_bitmap ~ran_f ~w ~h ~n in
   let img = bitmap_to_img ~bitmap in
   save_img ~filename ~img
 
