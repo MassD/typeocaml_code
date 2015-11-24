@@ -11,7 +11,9 @@ let bitmap_to_img ~bitmap =
   done;
   img
 
-let save_img ~filename ~img = Jpeg.save filename [] (Images.Rgb24 img)
+let save_jpg ~filename ~img = Jpeg.save (filename^".jpg") [] (Images.Rgb24 img)
+
+let save_png ~filename ~img = Png.save (filename^".png") [] (Images.Rgb24 img)
 
 let random_plot ~filename ~ran_f ~w ~h ~n =
   let darker c = if c-30 >= 0 then c-30 else 0 in
@@ -23,12 +25,11 @@ let random_plot ~filename ~ran_f ~w ~h ~n =
     bitmap.(x).(y) <- {Color.r = darker r;g = darker g;b = darker b};
   done;
   let img = bitmap_to_img ~bitmap in
-  save_img ~filename ~img
+  save_jpg ~filename ~img;
+  save_png ~filename ~img
 
 let decimal_only f = f -. (floor f)
 let ran_via_time bound = ((Unix.gettimeofday() |> decimal_only) *. 100000000. |> int_of_float) mod bound
 
-let _ = random_plot ~filename:"random_plot_time.jpg" ~ran_f:ran_via_time ~w:1024 ~h:1024 ~n:5
-
-
-(* let _ = random_plot ~filename:"random_plot_int.jpg" ~ran_f:Random.int ~w:1024 ~h:1024 ~n:5 *)
+let _ = random_plot ~filename:"random_plot_time" ~ran_f:ran_via_time ~w:1024 ~h:1024 ~n:5
+let _ = random_plot ~filename:"random_plot_int" ~ran_f:Random.int ~w:1024 ~h:1024 ~n:5
