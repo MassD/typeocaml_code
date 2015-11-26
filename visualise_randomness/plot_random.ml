@@ -37,3 +37,8 @@ let ran_via_time bound = ((Unix.gettimeofday() |> decimal_only) *. 100000000. |>
 
 let _ = random_plot ~filename:"random_plot_time" ~ran_f:ran_via_time ~w:1024 ~h:1024 ~n:5
 let _ = random_plot ~filename:"random_plot_int" ~ran_f:Random.int ~w:1024 ~h:1024 ~n:5
+
+
+let _ = Nocrypto_entropy_unix.initialize()
+let _ = random_plot ~filename:"random_plot_fortuna" ~ran_f:Nocrypto.Rng.Int.gen ~w:1024 ~h:1024 ~n:5
+
